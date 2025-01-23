@@ -20,6 +20,6 @@ public class Movie {
     }
 
     public double calculateCharge(int daysRented){
-        return movieType.getPriceStrategy().calculateCharge(daysRented);
+        return movieType.getMoviesCalculationStrategy().calculateCharge(daysRented);
     }
 }

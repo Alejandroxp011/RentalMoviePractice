@@ -11,13 +11,13 @@ public enum MovieType {
     NEW_RELEASE(new NewReleaseMoviesCalculations()),
     CHILDREN(new ChildrenMoviesCalculation());
 
-    private final MoviesCalculationStrategy priceStrategy;
+    private final MoviesCalculationStrategy moviesCalculationStrategy;
 
     MovieType(MoviesCalculationStrategy priceStrategy) {
-        this.priceStrategy = priceStrategy;
+        this.moviesCalculationStrategy = priceStrategy;
     }
 
-    public MoviesCalculationStrategy getPriceStrategy() {
-        return priceStrategy;
+    public MoviesCalculationStrategy getMoviesCalculationStrategy() {
+        return moviesCalculationStrategy;
     }
 }

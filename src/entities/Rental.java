@@ -31,7 +31,7 @@ public class Rental {
     }
 
     public int getFrequentRenterPoint(LocalDate now){
-        return movie.getMovieType().getPriceStrategy()
+        return movie.getMovieType().getMoviesCalculationStrategy()
             .calculateFrequentRenterPoints(getDaysRented(now));
     }
 

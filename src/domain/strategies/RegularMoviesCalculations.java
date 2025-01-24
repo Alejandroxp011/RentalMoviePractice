@@ -1,6 +1,6 @@
-package movies.src.strategies;
+package movies.src.domain.strategies;
 
-import movies.src.strategies.interfaces.MoviesCalculationStrategy;
+import movies.src.domain.strategies.interfaces.MoviesCalculationStrategy;
 
 public class RegularMoviesCalculations implements MoviesCalculationStrategy {
     @Override

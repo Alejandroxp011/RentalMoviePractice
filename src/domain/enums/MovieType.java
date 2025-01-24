@@ -1,9 +1,9 @@
-package movies.src.enums;
+package movies.src.domain.enums;
 
-import movies.src.strategies.ChildrenMoviesCalculation;
-import movies.src.strategies.NewReleaseMoviesCalculations;
-import movies.src.strategies.interfaces.MoviesCalculationStrategy;
-import movies.src.strategies.RegularMoviesCalculations;
+import movies.src.domain.strategies.ChildrenMoviesCalculation;
+import movies.src.domain.strategies.NewReleaseMoviesCalculations;
+import movies.src.domain.strategies.interfaces.MoviesCalculationStrategy;
+import movies.src.domain.strategies.RegularMoviesCalculations;
 
 public enum MovieType {
 

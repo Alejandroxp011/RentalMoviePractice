@@ -1,4 +1,4 @@
-package movies.src.strategies.interfaces;
+package movies.src.domain.strategies.interfaces;
 
 public interface MoviesCalculationStrategy {
     double calculateCharge(int daysRented);

@@ -1,7 +1,6 @@
 package movies.src.application;
 
 import movies.src.domain.entities.Movie;
-import movies.src.infraestructure.persistence.MovieRepository;
 
 public class MovieService {
     private final MovieRepository movieRepository;

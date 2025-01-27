@@ -2,39 +2,43 @@ package movies.src.domain.entities;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class Rental {
-    private final Customer customer;
-    private final Movie movie;
+    private final int id;
+    private final int customerId;
     private final LocalDate rentalDate;
+    private LocalDate returnDate;
+    private final List<RentalMovie> rentalMovies;
 
-    public Rental(Customer customer, Movie movie, LocalDate rentalDate) {
-        this.customer = customer;
-        this.movie = movie;
+    public Rental(int id, int customerId, LocalDate rentalDate, List<RentalMovie> rentalMovies) {
+        this.id = id;
+        this.customerId = customerId;
         this.rentalDate = rentalDate;
+        this.rentalMovies = rentalMovies;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public int getId() {
+        return id;
     }
 
-    public Movie getMovie() {
-        return movie;
+    public int getCustomerId() {
+        return customerId;
     }
 
     public LocalDate getRentalDate() {
         return rentalDate;
     }
 
-    public long getDaysRented(LocalDate now) {
-        return ChronoUnit.DAYS.between(rentalDate, now);
+    public LocalDate getReturnDate() {
+        return returnDate;
     }
 
-    public double getCharge(LocalDate now) {
-        return movie.calculateCharge((int) getDaysRented(now));
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
-    public int getFrequentRenterPoints(LocalDate now) {
-        return movie.calculateFrequentRenterPoints((int) getDaysRented(now));
+    public List<RentalMovie> getRentalMovies() {
+        return rentalMovies;
     }
 }

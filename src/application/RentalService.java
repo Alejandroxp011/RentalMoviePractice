@@ -1,42 +1,56 @@
 package movies.src.application;
 
 import java.time.LocalDate;
-import movies.src.domain.entities.Customer;
-import movies.src.domain.entities.Movie;
+
 import movies.src.domain.entities.Rental;
-import movies.src.infraestructure.persistence.CustomerRepository;
-import movies.src.infraestructure.persistence.MovieRepository;
-import movies.src.infraestructure.persistence.RentalRepository;
+import movies.src.domain.entities.RentalMovie;
+import movies.src.domain.exceptions.EntityNotFoundException;
+import movies.src.domain.exceptions.InvalidArgumentException;
+import movies.src.domain.exceptions.InvalidRentalOperationException;
+import movies.src.infraestructure.persistence.GenericRepository;
 
 public class RentalService {
-    private final StoreService storeService;
-    private final RentalRepository rentalRepository;
-    private final CustomerRepository customerRepository;
-    private final MovieRepository movieRepository;
+    private final GenericRepository<Rental, Integer> rentalRepository;
+    private final InventoryService inventoryService;
 
-    public RentalService(StoreService storeService,
-                         RentalRepository rentalRepository,
-                         CustomerRepository customerRepository,
-                         MovieRepository movieRepository) {
-        this.storeService = storeService;
+    public RentalService(GenericRepository<Rental, Integer> rentalRepository, InventoryService inventoryService) {
         this.rentalRepository = rentalRepository;
-        this.customerRepository = customerRepository;
-        this.movieRepository = movieRepository;
+        this.inventoryService = inventoryService;
     }
 
-    public void rentMovie(int customerId, int movieId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
-
-        if (!storeService.isMovieAvailable(movie)) {
-            throw new IllegalStateException("Movie not available.");
+    public void createRental(Rental rental) {
+        if (rental.getRentalMovies() == null || rental.getRentalMovies().isEmpty()) {
+            throw new InvalidArgumentException("A rental must include at least one movie.");
         }
 
-        storeService.reduceInventory(movie);
+        for (RentalMovie rentalMovie : rental.getRentalMovies()) {
+            if (!inventoryService.isMovieAvailable(rentalMovie.getMovieId(), rentalMovie.getQuantity())) {
+                throw new InvalidRentalOperationException(
+                        "Not enough inventory for movie ID: " + rentalMovie.getMovieId()
+                );
+            }
+        }
 
-        Rental rental = new Rental(customer, movie, LocalDate.now());
+        for (RentalMovie rentalMovie : rental.getRentalMovies()) {
+            inventoryService.reduceInventory(rentalMovie.getMovieId(), rentalMovie.getQuantity());
+        }
+
         rentalRepository.save(rental);
+    }
+
+    public void returnRental(int rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found with ID: " + rentalId));
+
+        if (rental.getReturnDate() != null) {
+            throw new InvalidRentalOperationException("Rental with ID " + rentalId + " has already been returned.");
+        }
+
+        rental.setReturnDate(LocalDate.now());
+        rentalRepository.update(rental);
+
+        for (RentalMovie rentalMovie : rental.getRentalMovies()) {
+            inventoryService.addInventory(rentalMovie.getMovieId(), rentalMovie.getQuantity());
+        }
     }
 }

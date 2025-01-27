@@ -2,18 +2,14 @@ package movies.src.domain.strategies;
 
 import movies.src.domain.strategies.interfaces.MoviesCalculationStrategy;
 
-public class ChildrenMoviesCalculation implements MoviesCalculationStrategy {
+public class NewReleaseMovieRentalCalculation implements MoviesCalculationStrategy {
     @Override
     public double calculateCharge(int daysRented) {
-        double result = 1.5;
-        if (daysRented > 3) {
-            result += (daysRented - 3) * 1.5;
-        }
-        return result;
+        return daysRented * 3;
     }
 
     @Override
     public int calculateFrequentRenterPoints(int daysRented) {
-        return 1;
+        return (daysRented > 1) ? 2 : 1;
     }
 }

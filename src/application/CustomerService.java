@@ -1,52 +1,68 @@
 package movies.src.application;
 
 import movies.src.domain.entities.Customer;
-import movies.src.domain.entities.Rental;
-import movies.src.infraestructure.persistence.CustomerRepository;
-import movies.src.infraestructure.persistence.RentalRepository;
+import movies.src.domain.exceptions.EntityNotFoundException;
+import movies.src.domain.exceptions.InvalidArgumentException;
+import movies.src.infraestructure.persistence.GenericRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class CustomerService {
+    private final GenericRepository<Customer, Integer> customerRepository;
 
-    private final CustomerRepository customerRepository;
-    private final RentalRepository rentalRepository;
-
-    public CustomerService(CustomerRepository customerRepository, RentalRepository rentalRepository) {
+    public CustomerService(GenericRepository<Customer, Integer> customerRepository) {
         this.customerRepository = customerRepository;
-        this.rentalRepository = rentalRepository;
     }
 
-    public String generateStatement(int customerId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+    public void createCustomer(Customer customer) {
+        if (customer == null) {
+            throw new InvalidArgumentException("Customer cannot be null.");
+        }
+        if (customer.getName() == null || customer.getName().isBlank()) {
+            throw new InvalidArgumentException("Customer name cannot be null or blank.");
+        }
+        customerRepository.save(customer);
+    }
 
-        List<Rental> rentals = rentalRepository.findAllByCustomerId(customerId);
-        StringBuilder statement = new StringBuilder();
-        double totalCharge = 0;
-        int totalFrequentRenterPoints = 0;
+    public Customer findCustomerById(int customerId) {
+        if (customerId <= 0) {
+            throw new InvalidArgumentException("Customer ID must be greater than zero.");
+        }
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID: " + customerId));
+    }
 
-        statement.append("Rental Record for ").append(customer.getName()).append("\n");
-
-        for (Rental rental : rentals) {
-            double rentalCharge = rental.getCharge(LocalDate.now());
-            int frequentRenterPoints = rental.getFrequentRenterPoints(LocalDate.now());
-            totalCharge += rentalCharge;
-            totalFrequentRenterPoints += frequentRenterPoints;
-
-            statement.append("\t")
-                    .append(rental.getMovie().getTitle())
-                    .append(" (")
-                    .append(rental.getDaysRented(LocalDate.now()))
-                    .append(" days): $")
-                    .append(String.format("%.2f", rentalCharge))
-                    .append("\n");
+    public List<Customer> findCustomersByName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new InvalidArgumentException("Name cannot be null or blank.");
         }
 
-        statement.append("Total owed: $").append(String.format("%.2f", totalCharge)).append("\n");
-        statement.append("Frequent renter points: ").append(totalFrequentRenterPoints);
+        return customerRepository.findAllByName(name);
+    }
 
-        return statement.toString();
+    public void updateCustomer(Customer customer) {
+        if (customer == null) {
+            throw new InvalidArgumentException("Customer cannot be null.");
+        }
+        if (customer.getName() == null || customer.getName().isBlank()) {
+            throw new InvalidArgumentException("Customer name cannot be null or blank.");
+        }
+        customerRepository.update(customer);
+    }
+
+    public void deleteCustomer(int customerId) {
+        if (customerId <= 0) {
+            throw new InvalidArgumentException("Customer ID must be greater than zero.");
+        }
+
+        boolean hasActiveRentals = checkIfCustomerHasActiveRentals(customerId);
+        if (hasActiveRentals) {
+            throw new InvalidArgumentException("Cannot delete customer with active rentals.");
+        }
+        customerRepository.delete(customerId);
+    }
+
+    private boolean checkIfCustomerHasActiveRentals(int customerId) {
+        return false;
     }
 }

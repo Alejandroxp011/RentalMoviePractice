@@ -4,8 +4,6 @@ import movies.src.domain.entities.Customer;
 import movies.src.domain.exceptions.EntityNotFoundException;
 import movies.src.domain.exceptions.InvalidArgumentException;
 import movies.src.infraestructure.persistence.CustomerRepository;
-import movies.src.infraestructure.persistence.GenericRepository;
-
 import java.util.List;
 
 public class CustomerService {

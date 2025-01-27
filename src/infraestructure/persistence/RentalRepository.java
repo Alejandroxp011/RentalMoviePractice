@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -54,5 +55,21 @@ public class RentalRepository extends GenericRepository<Rental, Integer> {
         } catch (Exception e) {
             throw new RuntimeException("Error updating return date for rental ID: " + rentalId, e);
         }
+    }
+
+    public List<Rental> findByCustomerId(int customerId) {
+        String query = "SELECT * FROM rental WHERE customer_id = ?";
+        List<Rental> rentals = new ArrayList<>();
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    rentals.add(mapResultSetToRental(rs, rentalMovieRepository));
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching rentals for customer ID: " + customerId, e);
+        }
+        return rentals;
     }
 }

@@ -2,7 +2,7 @@ package movies.src.domain.enums;
 
 import movies.src.domain.strategies.ChildrenMovieRentalCalculation;
 import movies.src.domain.strategies.NewReleaseMovieRentalCalculation;
-import movies.src.domain.strategies.interfaces.MoviesCalculationStrategy;
+import movies.src.domain.strategies.interfaces.MovieRentalCalculationStrategy;
 import movies.src.domain.strategies.RegularMovieCalculation;
 
 public enum MovieType {
@@ -11,13 +11,13 @@ public enum MovieType {
     NEW_RELEASE(new NewReleaseMovieRentalCalculation()),
     CHILDREN(new ChildrenMovieRentalCalculation());
 
-    private final MoviesCalculationStrategy moviesCalculationStrategy;
+    private final MovieRentalCalculationStrategy movieRentalCalculationStrategy;
 
-    MovieType(MoviesCalculationStrategy priceStrategy) {
-        this.moviesCalculationStrategy = priceStrategy;
+    MovieType(MovieRentalCalculationStrategy priceStrategy) {
+        this.movieRentalCalculationStrategy = priceStrategy;
     }
 
-    public MoviesCalculationStrategy getMoviesCalculationStrategy() {
-        return moviesCalculationStrategy;
+    public MovieRentalCalculationStrategy getMoviesCalculationStrategy() {
+        return movieRentalCalculationStrategy;
     }
 }

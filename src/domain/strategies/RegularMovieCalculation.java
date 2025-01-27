@@ -1,8 +1,8 @@
 package movies.src.domain.strategies;
 
-import movies.src.domain.strategies.interfaces.MoviesCalculationStrategy;
+import movies.src.domain.strategies.interfaces.MovieRentalCalculationStrategy;
 
-public class RegularMovieCalculation implements MoviesCalculationStrategy {
+public class RegularMovieCalculation implements MovieRentalCalculationStrategy {
     @Override
     public double calculateCharge(int daysRented) {
         double result = 2;

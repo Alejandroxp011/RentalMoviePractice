@@ -1,6 +1,10 @@
 package movies.src.application;
 
 import movies.src.domain.entities.Movie;
+import movies.src.domain.exceptions.EntityNotFoundException;
+import movies.src.domain.exceptions.InvalidArgumentException;
+import movies.src.infraestructure.persistence.MovieRepository;
+import java.util.List;
 
 public class MovieService {
     private final MovieRepository movieRepository;
@@ -9,47 +13,54 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public Movie findMovieById(int movieId) {
-        return movieRepository.findById(movieId)
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + movieId));
-    }
+    public void createMovie(Movie movie) {
+        if (movie == null) {
+            throw new InvalidArgumentException("Movie cannot be null.");
+        }
+        if (movie.getTitle() == null || movie.getTitle().isBlank()) {
+            throw new InvalidArgumentException("Movie title cannot be null or blank.");
+        }
+        if (movie.getMovieType() == null) {
+            throw new InvalidArgumentException("Movie type cannot be null.");
+        }
 
-    public void addMovie(Movie movie) {
+        if (movieRepository.findByTitle(movie.getTitle()).isPresent()) {
+            throw new InvalidArgumentException("A movie with this title already exists.");
+        }
+
         movieRepository.save(movie);
     }
 
+    public Movie findById(int id) {
+        if (id <= 0) {
+            throw new InvalidArgumentException("Movie ID must be greater than zero.");
+        }
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + id));
+    }
+
+    public List<Movie> findByTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new InvalidArgumentException("Movie title cannot be null or blank.");
+        }
+        return movieRepository.findAllByTitle(title);
+    }
+
     public void updateMovie(Movie movie) {
+        if (movie == null) {
+            throw new InvalidArgumentException("Movie cannot be null.");
+        }
+        if (movie.getId() <= 0) {
+            throw new InvalidArgumentException("Movie ID must be greater than zero.");
+        }
+
         movieRepository.update(movie);
     }
 
-    public void deleteMovie(int movieId) {
-        Movie movie = findMovieById(movieId);
-        if (movie.getInventory() > 0) {
-            throw new IllegalStateException("Cannot delete a movie that still has inventory.");
+    public void deleteMovie(int id) {
+        if (id <= 0) {
+            throw new InvalidArgumentException("Movie ID must be greater than zero.");
         }
-        movieRepository.delete(movieId);
-    }
-
-    public boolean isMovieAvailable(int movieId) {
-        Movie movie = findMovieById(movieId);
-        return movie.getInventory() > 0;
-    }
-
-    public void reduceInventory(int movieId) {
-        Movie movie = findMovieById(movieId);
-        if (movie.getInventory() <= 0) {
-            throw new IllegalStateException("Movie not available in inventory.");
-        }
-        movie.setInventory(movie.getInventory() - 1);
-        movieRepository.update(movie);
-    }
-
-    public void addInventory(int movieId, int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero.");
-        }
-        Movie movie = findMovieById(movieId);
-        movie.setInventory(movie.getInventory() + quantity);
-        movieRepository.update(movie);
+        movieRepository.delete(id);
     }
 }

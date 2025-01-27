@@ -12,7 +12,7 @@ import java.util.Optional;
 public class CustomerRepository extends GenericRepository<Customer, Integer> {
 
     public CustomerRepository(Connection connection) {
-        super(connection, "customer", CustomerRepository::mapResultSetToCustomer);
+        super("customer", CustomerRepository::mapResultSetToCustomer);
     }
 
     private static Customer mapResultSetToCustomer(ResultSet rs) {

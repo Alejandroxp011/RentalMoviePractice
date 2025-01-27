@@ -1,8 +1,8 @@
 package org.rental.application;
 
+import org.rental.application.validators.Validator;
 import org.rental.domain.entities.Movie;
 import org.rental.domain.exceptions.EntityNotFoundException;
-import org.rental.domain.exceptions.InvalidArgumentException;
 import org.rental.infraestructure.persistence.MovieRepository;
 import java.util.List;
 
@@ -14,53 +14,32 @@ public class MovieService {
     }
 
     public void createMovie(Movie movie) {
-        if (movie == null) {
-            throw new InvalidArgumentException("Movie cannot be null.");
-        }
-        if (movie.getTitle() == null || movie.getTitle().isBlank()) {
-            throw new InvalidArgumentException("Movie title cannot be null or blank.");
-        }
-        if (movie.getMovieType() == null) {
-            throw new InvalidArgumentException("Movie type cannot be null.");
-        }
-
-        if (movieRepository.findByTitle(movie.getTitle()).isPresent()) {
-            throw new InvalidArgumentException("A movie with this title already exists.");
-        }
+        Validator.validateNotNull(movie, "Movie");
+        Validator.validateObjectPropertiesNotNull(movie, "Movie");
 
         movieRepository.save(movie);
     }
 
     public Movie findById(int id) {
-        if (id <= 0) {
-            throw new InvalidArgumentException("Movie ID must be greater than zero.");
-        }
+        Validator.validatePositiveNumber(id, "Movie ID");
         return movieRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + id));
     }
 
     public List<Movie> findByTitle(String title) {
-        if (title == null || title.isBlank()) {
-            throw new InvalidArgumentException("Movie title cannot be null or blank.");
-        }
+        Validator.validateNotNull(title, "Title");
+        Validator.validateNotEmpty(title, "Title");
         return movieRepository.findAllByTitle(title);
     }
 
     public void updateMovie(Movie movie) {
-        if (movie == null) {
-            throw new InvalidArgumentException("Movie cannot be null.");
-        }
-        if (movie.getId() <= 0) {
-            throw new InvalidArgumentException("Movie ID must be greater than zero.");
-        }
-
+        Validator.validateNotNull(movie, "Movie");
+        Validator.validatePositiveNumber(movie.getId(), "Movie ID");
         movieRepository.update(movie);
     }
 
     public void deleteMovie(int id) {
-        if (id <= 0) {
-            throw new InvalidArgumentException("Movie ID must be greater than zero.");
-        }
+        Validator.validatePositiveNumber(id, "Movie ID");
         movieRepository.delete(id);
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class RentalMovieRepository extends GenericRepository<RentalMovie, Integer> {
 
     public RentalMovieRepository(Connection connection) {
-        super(connection, "rental_movie", RentalMovieRepository::mapResultSetToRentalMovie);
+        super("rental_movie", RentalMovieRepository::mapResultSetToRentalMovie);
     }
 
     private static RentalMovie mapResultSetToRentalMovie(ResultSet rs) {

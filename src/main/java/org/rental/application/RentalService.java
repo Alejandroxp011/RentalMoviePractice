@@ -3,6 +3,7 @@ package org.rental.application;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.rental.application.validators.Validator;
 import org.rental.domain.entities.Customer;
 import org.rental.domain.entities.Movie;
 import org.rental.domain.entities.Rental;
@@ -27,9 +28,7 @@ public class RentalService {
     }
 
     public void createRental(Rental rental) {
-        if (rental == null || rental.getRentalMovies().isEmpty()) {
-            throw new InvalidArgumentException("Invalid rental data.");
-        }
+        Validator.validateNotNull(rental, "Rental");
 
         Customer customer = customerRepository.findById(rental.getCustomerId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID: " + rental.getCustomerId()));

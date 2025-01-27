@@ -13,7 +13,7 @@ import java.util.Optional;
 public class MovieRepository extends GenericRepository<Movie, Integer> {
 
     public MovieRepository(Connection connection) {
-        super(connection, "movie", MovieRepository::mapResultSetToMovie);
+        super( "movie", MovieRepository::mapResultSetToMovie);
     }
 
     private static Movie mapResultSetToMovie(ResultSet rs) {

@@ -12,8 +12,8 @@ public abstract class GenericRepository<T, ID> {
     private final String tableName;
     private final Function<ResultSet, T> mapper;
 
-    protected GenericRepository(Connection connection, String tableName, Function<ResultSet, T> mapper) {
-        this.connection = connection;
+    protected GenericRepository(String tableName, Function<ResultSet, T> mapper) {
+        this.connection = DatabaseConnection.getConnection();
         this.tableName = tableName;
         this.mapper = mapper;
     }

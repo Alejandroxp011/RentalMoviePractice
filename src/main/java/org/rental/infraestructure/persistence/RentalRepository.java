@@ -15,7 +15,7 @@ public class RentalRepository extends GenericRepository<Rental, Integer> {
     private final RentalMovieRepository rentalMovieRepository;
 
     public RentalRepository(Connection connection, RentalMovieRepository rentalMovieRepository) {
-        super(connection, "rental", rs -> mapResultSetToRental(rs, rentalMovieRepository));
+        super( "rental", rs -> mapResultSetToRental(rs, rentalMovieRepository));
         this.rentalMovieRepository = rentalMovieRepository;
     }
 

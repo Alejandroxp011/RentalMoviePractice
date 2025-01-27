@@ -1,5 +1,6 @@
 package org.rental.application;
 
+import org.rental.application.validators.Validator;
 import org.rental.domain.entities.Customer;
 import org.rental.domain.exceptions.EntityNotFoundException;
 import org.rental.domain.exceptions.InvalidArgumentException;
@@ -14,18 +15,15 @@ public class CustomerService {
     }
 
     public void createCustomer(Customer customer) {
-        if (customer == null || customer.getName() == null || customer.getName().isBlank()) {
-            throw new InvalidArgumentException("Invalid customer data.");
-        }
+        Validator.validateNotNull(customer, "Customer");
+        Validator.validateNotEmpty(customer.getName(), "Customer name");
         customerRepository.save(customer);
     }
 
-    public Customer findById(int id) {
-        if (id <= 0) {
-            throw new InvalidArgumentException("Customer ID must be greater than zero.");
-        }
-        return customerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID: " + id));
+    public Customer findById(int customerId) {
+        Validator.validatePositiveNumber(customerId, "Customer ID");
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID: " + customerId));
     }
 
     public List<Customer> findByName(String name) {

@@ -11,7 +11,7 @@ import java.util.Optional;
 public class InventoryRepository extends GenericRepository<Inventory, Integer> {
 
     public InventoryRepository(Connection connection) {
-        super(connection, "inventory", InventoryRepository::mapResultSetToInventory);
+        super("inventory", InventoryRepository::mapResultSetToInventory);
     }
 
     private static Inventory mapResultSetToInventory(ResultSet rs) {

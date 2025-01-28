@@ -1,12 +1,15 @@
 package org.rental.infraestructure.persistence;
+
+import org.rental.infraestructure.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
 public abstract class GenericRepository<T, ID> {
     private final Connection connection;
     private final String tableName;
@@ -37,19 +40,6 @@ public abstract class GenericRepository<T, ID> {
         return Optional.empty();
     }
 
-    public List<T> findAll() {
-        String query = "SELECT * FROM " + tableName;
-        List<T> results = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                results.add(mapper.apply(rs));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error fetching all entities from table: " + tableName, e);
-        }
-        return results;
-    }
 
     public void delete(ID id) {
         String query = "DELETE FROM " + tableName + " WHERE id = ?";

@@ -3,6 +3,7 @@ package org.rental.application;
 import org.rental.application.validators.Validator;
 import org.rental.domain.entities.Movie;
 import org.rental.domain.exceptions.EntityNotFoundException;
+import org.rental.domain.exceptions.InvalidArgumentException;
 import org.rental.infraestructure.persistence.MovieRepository;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class MovieService {
     public void createMovie(Movie movie) {
         Validator.validateNotNull(movie, "Movie");
         Validator.validateObjectPropertiesNotNull(movie, "Movie");
+
+        if(movieRepository.findByTitle(movie.getTitle()).isPresent()) {
+            throw new InvalidArgumentException("Movie with title " + movie.getTitle() + " already exists.");
+        }
 
         movieRepository.save(movie);
     }
@@ -35,6 +40,10 @@ public class MovieService {
     public void updateMovie(Movie movie) {
         Validator.validateNotNull(movie, "Movie");
         Validator.validatePositiveNumber(movie.getId(), "Movie ID");
+
+        if(movieRepository.findByTitle(movie.getTitle()).isPresent()) {
+            throw new InvalidArgumentException("Movie with title " + movie.getTitle() + " already exists.");
+        }
         movieRepository.update(movie);
     }
 

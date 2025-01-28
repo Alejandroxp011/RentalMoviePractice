@@ -1,10 +1,13 @@
 package org.rental.infraestructure.persistence;
 
 import org.rental.domain.entities.RentalMovie;
+import org.rental.domain.exceptions.SqlOperationException;
+import org.rental.infraestructure.utils.SQLQueries;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,30 +23,28 @@ public class RentalMovieRepository extends GenericRepository<RentalMovie, Intege
                     rs.getInt("movie_id"),
                     rs.getInt("quantity")
             );
-        } catch (Exception e) {
-            throw new RuntimeException("Error mapping ResultSet to RentalMovie", e);
+        } catch (SQLException e) {
+            throw new SqlOperationException("Error mapping ResultSet to RentalMovie", e);
         }
     }
 
     public List<RentalMovie> findMoviesByRentalId(int rentalId) {
-        String query = "SELECT movie_id, quantity FROM rental_movie WHERE rental_id = ?";
         List<RentalMovie> rentalMovies = new ArrayList<>();
-        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(SQLQueries.SELECT_RENTAL_MOVIES_BY_RENTAL_ID)) {
             stmt.setInt(1, rentalId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     rentalMovies.add(mapResultSetToRentalMovie(rs));
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error fetching movies for rental ID: " + rentalId, e);
+        } catch (SQLException e) {
+            throw new SqlOperationException("Error fetching movies for rental ID: " + rentalId, e);
         }
         return rentalMovies;
     }
 
     public void saveRentalMovies(int rentalId, List<RentalMovie> rentalMovies) {
-        String query = "INSERT INTO rental_movie (rental_id, movie_id, quantity) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(SQLQueries.INSERT_RENTAL_MOVIES)) {
             for (RentalMovie rentalMovie : rentalMovies) {
                 stmt.setInt(1, rentalId);
                 stmt.setInt(2, rentalMovie.getMovieId());
@@ -51,8 +52,8 @@ public class RentalMovieRepository extends GenericRepository<RentalMovie, Intege
                 stmt.addBatch();
             }
             stmt.executeBatch();
-        } catch (Exception e) {
-            throw new RuntimeException("Error saving movies for rental ID: " + rentalId, e);
+        } catch (SQLException e) {
+            throw new SqlOperationException("Error saving movies for rental ID: " + rentalId, e);
         }
     }
 }

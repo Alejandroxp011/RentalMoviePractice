@@ -1,7 +1,8 @@
 CREATE TABLE customer
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    frequent_renter_points INT DEFAULT 0
 );
 
 CREATE TABLE movie

@@ -1,4 +1,4 @@
-package org.rental.infraestructure.persistence;
+package org.rental.infraestructure;
 
 import java.io.FileInputStream;
 import java.io.IOException;

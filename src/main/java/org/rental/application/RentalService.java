@@ -9,7 +9,7 @@ import org.rental.domain.entities.Movie;
 import org.rental.domain.entities.Rental;
 import org.rental.domain.entities.RentalMovie;
 import org.rental.domain.exceptions.EntityNotFoundException;
-import org.rental.domain.exceptions.InvalidArgumentException;
+import org.rental.domain.exceptions.InventoryUnavailableException;
 import org.rental.domain.strategies.interfaces.MovieRentalCalculationStrategy;
 import org.rental.infraestructure.persistence.CustomerRepository;
 import org.rental.infraestructure.persistence.RentalRepository;
@@ -40,7 +40,7 @@ public class RentalService {
             Movie movie = movieService.findById(rentalMovie.getMovieId());
 
             if (!inventoryService.isMovieAvailable(movie.getId(), rentalMovie.getQuantity())) {
-                throw new InvalidArgumentException("Not enough copies available for movie: " + movie.getTitle());
+                throw new InventoryUnavailableException("Not enough copies available for movie: " + movie.getTitle());
             }
 
             MovieRentalCalculationStrategy strategy = movie.getMovieType().getMoviesCalculationStrategy();
@@ -54,6 +54,7 @@ public class RentalService {
         System.out.println("Total charge: " + totalCharge);
         System.out.println("Frequent renter points: " + frequentRenterPoints);
 
+        customerRepository.updateFrequentRenterPoints(customer.getId(), customer.getFrequentRenterPoints() + frequentRenterPoints);
         rentalRepository.save(rental);
     }
 
@@ -68,9 +69,7 @@ public class RentalService {
     }
 
     public List<Rental> getRentalsByCustomerId(int customerId) {
-        if (customerId <= 0) {
-            throw new InvalidArgumentException("Customer ID must be greater than zero.");
-        }
+        Validator.validatePositiveNumber(customerId, "Customer ID");
         return rentalRepository.findByCustomerId(customerId);
     }
 }

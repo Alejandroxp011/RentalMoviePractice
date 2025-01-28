@@ -17,6 +17,7 @@ CREATE TABLE rental
     id          INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT  NOT NULL,
     rental_date DATE NOT NULL,
+    return_date DATE,
     FOREIGN KEY (customer_id) REFERENCES customer (id)
 );
 

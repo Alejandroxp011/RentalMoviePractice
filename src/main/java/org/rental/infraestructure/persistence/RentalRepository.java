@@ -5,7 +5,6 @@ import org.rental.domain.entities.RentalMovie;
 import org.rental.domain.exceptions.SqlOperationException;
 import org.rental.infraestructure.utils.SQLQueries;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,8 +16,8 @@ import java.util.List;
 public class RentalRepository extends GenericRepository<Rental, Integer> {
     private final RentalMovieRepository rentalMovieRepository;
 
-    public RentalRepository(Connection connection, RentalMovieRepository rentalMovieRepository) {
-        super( "rental", rs -> mapResultSetToRental(rs, rentalMovieRepository));
+    public RentalRepository(RentalMovieRepository rentalMovieRepository) {
+        super("rental", rs -> mapResultSetToRental(rs, rentalMovieRepository));
         this.rentalMovieRepository = rentalMovieRepository;
     }
 
@@ -29,6 +28,7 @@ public class RentalRepository extends GenericRepository<Rental, Integer> {
                     rs.getInt("id"),
                     rs.getInt("customer_id"),
                     rs.getDate("rental_date").toLocalDate(),
+                    rs.getDate("return_date"),
                     rentalMovies
             );
         } catch (SQLException e) {

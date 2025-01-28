@@ -1,16 +1,17 @@
 package org.rental.domain.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Customer {
-    private final int id;
-    private final String name;
-    private final int frequentRenterPoints;
+    private int id;
+    private String name;
+    private int frequentRenterPoints;
 
-
-    public Customer(int id, String name) {
-        this.id = id;
-        this.name = name;
-        this.frequentRenterPoints = 0;
-    }
 
     public int getId() {
         return id;

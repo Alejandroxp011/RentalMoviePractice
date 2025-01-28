@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RentalMovieRepository extends GenericRepository<RentalMovie, Integer> {
 
-    public RentalMovieRepository(Connection connection) {
+    public RentalMovieRepository() {
         super("rental_movie", RentalMovieRepository::mapResultSetToRentalMovie);
     }
 

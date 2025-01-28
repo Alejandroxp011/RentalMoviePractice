@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class InventoryRepository extends GenericRepository<Inventory, Integer> {
 
-    public InventoryRepository(Connection connection) {
+    public InventoryRepository() {
         super("inventory", InventoryRepository::mapResultSetToInventory);
     }
 

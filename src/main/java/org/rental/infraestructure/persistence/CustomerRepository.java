@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class CustomerRepository extends GenericRepository<Customer, Integer> {
 
-    public CustomerRepository(Connection connection) {
+    public CustomerRepository() {
         super("customer", CustomerRepository::mapResultSetToCustomer);
     }
 
@@ -22,7 +22,8 @@ public class CustomerRepository extends GenericRepository<Customer, Integer> {
         try {
             return new Customer(
                     rs.getInt("id"),
-                    rs.getString("name")
+                    rs.getString("name"),
+                    rs.getInt("frequent_renter_points")
             );
         } catch (Exception e) {
             throw new RuntimeException("Error mapping ResultSet to Customer", e);
@@ -72,7 +73,6 @@ public class CustomerRepository extends GenericRepository<Customer, Integer> {
         try (PreparedStatement stmt = getConnection().prepareStatement(SQLQueries.INSERT_CUSTOMER)) {
             stmt.setInt(1, customer.getId());
             stmt.setString(2, customer.getName());
-            stmt.setInt(3, customer.getFrequentRenterPoints());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SqlOperationException("Error saving customer: " + customer.getName(), e);

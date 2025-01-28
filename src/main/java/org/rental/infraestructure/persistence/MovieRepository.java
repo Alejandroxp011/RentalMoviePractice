@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class MovieRepository extends GenericRepository<Movie, Integer> {
 
-    public MovieRepository(Connection connection) {
+    public MovieRepository() {
         super( "movie", MovieRepository::mapResultSetToMovie);
     }
 
@@ -24,7 +24,7 @@ public class MovieRepository extends GenericRepository<Movie, Integer> {
             return new Movie(
                     rs.getInt("id"),
                     rs.getString("title"),
-                    MovieType.valueOf(rs.getString("type"))
+                    MovieType.valueOf(rs.getString("movie_type"))
             );
         } catch (SQLException e) {
             throw new SqlOperationException("Error mapping ResultSet to Movie", e);

@@ -1,23 +1,13 @@
 package org.rental.domain.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Inventory {
-    private final int movieId;
+    private int movieId;
     private int availableCopies;
-
-    public Inventory(int movieId, int availableCopies) {
-        this.movieId = movieId;
-        this.availableCopies = availableCopies;
-    }
-
-    public int getMovieId() {
-        return movieId;
-    }
-
-    public int getAvailableCopies() {
-        return availableCopies;
-    }
-
-    public void setAvailableCopies(int availableCopies) {
-        this.availableCopies = availableCopies;
-    }
 }

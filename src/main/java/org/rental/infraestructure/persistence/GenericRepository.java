@@ -26,7 +26,7 @@ public abstract class GenericRepository<T, ID> {
     }
 
     public Optional<T> findById(ID id) {
-        String query = "SELECT * FROM " + tableName + " WHERE id = ?";
+        String query = String.format("SELECT * FROM %s WHERE id = ?", tableName);
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -42,7 +42,7 @@ public abstract class GenericRepository<T, ID> {
 
 
     public void delete(ID id) {
-        String query = "DELETE FROM " + tableName + " WHERE id = ?";
+        String query = String.format("DELETE FROM %s WHERE id = ?", tableName);
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
             stmt.executeUpdate();

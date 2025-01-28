@@ -19,6 +19,6 @@ public class SQLQueries {
 
     public static final String SELECT_MOVIE_BY_TITLE = "SELECT * FROM movie WHERE title = ?";
     public static final String SELECT_MOVIES_BY_TITLE = "SELECT * FROM movie WHERE title LIKE ?";
-    public static final String INSERT_MOVIE = "INSERT INTO movie (id, title, type) VALUES (?, ?, ?)";
+    public static final String INSERT_MOVIE = "INSERT INTO movie (id, title, movie_type) VALUES (?, ?, ?)";
     public static final String UPDATE_MOVIE = "UPDATE movie SET title = ?, type = ? WHERE id = ?";
 }

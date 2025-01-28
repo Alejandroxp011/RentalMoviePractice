@@ -20,7 +20,8 @@ public class RentalService {
     private final RentalRepository rentalRepository;
     private final CustomerRepository customerRepository;
 
-    public RentalService(MovieService movieService, InventoryService inventoryService, RentalRepository rentalRepository, CustomerRepository customerRepository) {
+    public RentalService(MovieService movieService, InventoryService inventoryService,
+                         RentalRepository rentalRepository, CustomerRepository customerRepository) {
         this.movieService = movieService;
         this.inventoryService = inventoryService;
         this.rentalRepository = rentalRepository;
@@ -54,8 +55,8 @@ public class RentalService {
         System.out.println("Total charge: " + totalCharge);
         System.out.println("Frequent renter points: " + frequentRenterPoints);
 
-        customerRepository.updateFrequentRenterPoints(customer.getId(), customer.getFrequentRenterPoints() + frequentRenterPoints);
         rentalRepository.save(rental);
+        customerRepository.updateFrequentRenterPoints(customer.getId(), customer.getFrequentRenterPoints() + frequentRenterPoints);
     }
 
     public void returnRental(int rentalId, List<RentalMovie> rentalMovies) {
